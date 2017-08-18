@@ -31,7 +31,7 @@ end
 % Hypothesis result in vector form
 h = a{num_layers}';
 % Labels in vector form
-yv = 0:(num_labels - 1) == y';
+yv = 0:(num_labels - 1) == y;
 
 % Cost function cost term
 cost = -yv.*log(h) - (1-yv).*log(1-h);
