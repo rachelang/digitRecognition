@@ -1,6 +1,5 @@
-function [Theta, costResults, bestNumLayers] = varyNumHiddenLayers(max_hidden_layers, ...
-                                              nn_specs, ...
-                                              initial_params, ...
+function [bestParams, train_cost, cv_cost, bestNumLayers] = varyNumHiddenLayers(max_hidden_layers, ...
+                                              max_iters, nn_specs, ...
                                               X_train, y_train, ...
                                               X_cv, y_cv)
                             
@@ -10,37 +9,44 @@ hidden_layer_size = nn_specs(3);
 num_labels = nn_specs(4);
 lambda = 0; % lambda will be varied in varyLambda
 
-costResults = size(1, max_hidden_layers);
-% shorthand for cost function
-costFunction = @(p) costFunction(p, num_hidden_layers, ...
+train_cost = size(1, max_hidden_layers);
+cv_cost = size(1, max_hidden_layers);
+
+for i = 1:max_hidden_layers
+  num_hidden_layers = i;
+  fprintf('\ntraining nn with %d hidden layer(s)\n', num_hidden_layers);
+
+  % shorthand for cost function
+  costFunctionS = @(p) costFunction(p, num_hidden_layers, ...
+                                   input_layer_size, ...
+                                   hidden_layer_size, ...
+                                   num_labels, ...
+                                   X_train, y_train, lambda);
+                               
+  % randomly initialize weights
+  initial_params = randInitWeights(num_hidden_layers, input_layer_size, hidden_layer_size, num_labels);
+
+  options = optimset('MaxIter', max_iters);   
+  [params, ~] = fmincg(costFunctionS, initial_params, options); 
+                       
+  [train_cost(i), ~] = costFunction(params, num_hidden_layers, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
                                    X_train, y_train, lambda);
                                    
-for num_hidden_layers = 1:max_hidden_layers
-  fprintf('\training nn with %d hidden layer(s)\n', num_hidden_layers);
-
-  options = optimset('GradObj', 'on ', 'MaxIter', 10);   
-  [Theta, cost] = fmincg(costFunction, initial_params, options); 
-  costResults(i) = cost;
-
-  Theta = reshapeParams(Theta, num_hidden_layers, ...
+  [cv_cost(i), ~] = costFunction(params, num_hidden_layers, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
-                                   num_labels);
-                              
-  y_pred = predict(Theta, X_cv);
-  accuracy = mean(double(y_pred == y_cv));
-  if i == 1
-    highestAccuracy = accuracy;
-    bestNumLayers = 1;
-  else
-    if accuracy > highestAccuracy
-      highestAccuracy = accuracy;
-      bestNumLayers = i;
-    end
+                                   num_labels, ...
+                                   X_cv, y_cv, lambda);
+                               
+  if cv_cost(i) == min(cv_cost)
+      bestParams = params;
   end
-  
-  fprintf('\n%d hidden layers cross validation set accuracy: %f\n', num_hidden_layers, accuracy * 100);
+end
+
+[~, bestNumLayers] = min(cv_cost);
+fprintf('Optimal number of hidden layers is %d\n', bestNumLayers);
+
 end

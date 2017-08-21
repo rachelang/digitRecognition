@@ -88,7 +88,7 @@ index = 1;
 
 for i = 1:(num_layers - 1)
     grad(index:(index + numel(Theta_grad{i}) - 1)) = Theta_grad{i}(:); 
-    index += numel(Theta_grad{i});
+    index = index + numel(Theta_grad{i});
 end
 
 end
