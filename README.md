@@ -9,6 +9,8 @@ Test Set Accuracy: **95.6%**
 
 Test Set error: **0.312623**
 
+The trained theta with the above results is saved [here](trainedTheta/3layer30units.mat)
+
 Optimal lambda: 0.030
 
 ![alt text](https://github.com/rachelang/digitRecognition/blob/master/graph/lambdaVsCost.PNG "lambdaVsCost")
