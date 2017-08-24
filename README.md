@@ -11,7 +11,7 @@ Test Set error: **0.312623**
 
 Optimal lambda: 0.030
 
-[](lambdaVsCost.PNG)
+![alt text](https://github.com/rachelang/digitRecognition/blob/master/graph/lambdaVsCost.PNG "lambdaVsCost")
 
 ## Reflection
 I originally attempted to deploy a multi-hidden-layer neural network, but my test runs suggested that it either had too much bias or variance, and a one hidden layer network was perfect for the problem. Based on the lambda vs. cost plot and optimal lambda resulting from a 30 unit hidden layer, the accuracy can most likely be increased as the optimal lambda is rather low, suggesting that the network is not biased and could do better with more units in its hidden layer.
