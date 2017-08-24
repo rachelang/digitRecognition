@@ -5,10 +5,13 @@ Machine learning recognition of handwritten digits 0 to 9 via a three-layer neur
 The test data fed into the input neurons, and was trained using an advanced optimization algorithm via forward and backpropagation. The network was also regularized, and the optimal lambda was chosen using lowest cross validation error on a range of lambda values.
 
 ## Performance and Results
-Test Set Accuracy: 95.6%
-Test Set error: 0.312623
+Test Set Accuracy: **95.6%**
+
+Test Set error: **0.312623**
+
 Optimal lambda: 0.030
-[]
+
+[](lambdaVsCost.PNG)
 
 ## Reflection
 I originally attempted to deploy a multi-hidden-layer neural network, but my test runs suggested that it either had too much bias or variance, and a one hidden layer network was perfect for the problem. Based on the lambda vs. cost plot and optimal lambda resulting from a 30 unit hidden layer, the accuracy can most likely be increased as the optimal lambda is rather low, suggesting that the network is not biased and could do better with more units in its hidden layer.
