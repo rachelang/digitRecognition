@@ -17,7 +17,7 @@ initial_params = randInitWeights(num_hidden_layers, input_layer_size, hidden_lay
 
 for i = 1:length(lambda_vec)
   lambda = lambda_vec(i);
-  fprintf('\ntraining regularized nn with %.3f lambda\n', lambda);
+  fprintf('\nTraining regularized nn with %.3f lambda\n', lambda);
 
   % shorthand for cost function
   costFunctionS = @(p) costFunction(p, num_hidden_layers, ...
@@ -26,8 +26,28 @@ for i = 1:length(lambda_vec)
                                    num_labels, ...
                                    X_train, y_train, lambda);
 
+  % finish at least the amount of iterations specified                             
   options = optimset('MaxIter', max_iters);   
   [params, ~] = fmincg(costFunctionS, initial_params, options); 
+  [prevCost, ~] = costFunction(params, num_hidden_layers, ...
+                                   input_layer_size, ...
+                                   hidden_layer_size, ...
+                                   num_labels, ...
+                                   X_train, y_train, lambda);
+                               
+  % do while compares cost, stops fmincg when cost difference is
+  % negligeable
+  costDiff = 0;
+  iters = 0;
+  % since cost should go down every iteration, no need for absolute value
+  % comparison, otherwise indicates error
+  while (costDiff > 0.01 || iters == 0) && iters < 50
+    options = optimset('MaxIter', 1);   
+    [params, thisCost] = fmincg(costFunctionS, params, options); 
+    costDiff = prevCost - thisCost;
+    prevCost = thisCost;
+    iters = iters + 1;
+  end
 
   [train_cost(i), ~] = costFunction(params, num_hidden_layers, ...
                                    input_layer_size, ...
